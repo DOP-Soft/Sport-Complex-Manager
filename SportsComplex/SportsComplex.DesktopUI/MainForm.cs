@@ -101,7 +101,7 @@ namespace SportsComplex.DesktopUI
         {
             cbCustomer.Items.Clear();
 
-            var rents = _rentsRepository.GetRentsOnDate(DateTime.Now);
+            var rents = _rentsRepository.GetRentsOnDate(dtpDate.Value);
             var orderedRents = from r in rents
                         orderby r.Customer.LastName, r.Customer.FirstName
                         select r;
