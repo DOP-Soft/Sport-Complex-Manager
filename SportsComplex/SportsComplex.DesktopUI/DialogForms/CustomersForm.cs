@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -25,13 +26,13 @@ namespace SportsComplex.DesktopUI
         {
             var customers = _customersRepository.SelectAll();
 
-            foreach(var r in customers)
+            foreach (var r in customers)
             {
                 dgvCustomers.Rows.Add(r.Id, r.FirstName, r.LastName, r.Phone);
             }
         }
 
-        
+
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
@@ -41,7 +42,7 @@ namespace SportsComplex.DesktopUI
                 dgvCustomers.Rows.Clear();
                 var renters = _customersRepository.SelectAll();
                 // Update customers data grid.
-                foreach(var r in renters)
+                foreach (var r in renters)
                 {
                     dgvCustomers.Rows.Add(r.Id, r.FirstName, r.LastName, r.Phone);
                 }
@@ -53,11 +54,18 @@ namespace SportsComplex.DesktopUI
             if (dgvCustomers.SelectedCells.Count > 0)
             {
                 int row = dgvCustomers.SelectedCells[0].RowIndex;
-                
-                // Remove selected renter. 
-                _customersRepository.Remove((int)dgvCustomers[0, row].Value);
 
-                dgvCustomers.Rows.RemoveAt(dgvCustomers.SelectedCells[0].RowIndex);
+                try
+                {
+                    // Remove selected renter. 
+                    _customersRepository.Remove((int)dgvCustomers[0, row].Value);
+                    // Remove item from dataGridView.
+                    dgvCustomers.Rows.RemoveAt(dgvCustomers.SelectedCells[0].RowIndex);
+                }
+                catch (SqlException)
+                {
+                    MessageBox.Show("Selected customer cannot be removed as he has a rent", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
@@ -72,7 +80,7 @@ namespace SportsComplex.DesktopUI
             {
                 _customersRepository.Edit(id, lastName, firstName, phone);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Edit error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

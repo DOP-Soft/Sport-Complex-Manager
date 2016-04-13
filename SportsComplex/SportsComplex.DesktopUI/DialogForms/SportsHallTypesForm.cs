@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -39,7 +40,7 @@ namespace SportsComplex.DesktopUI
 
             tbTypeName.Text = string.Empty;
         }
-        
+
 
         private void btnAddHallType_Click(object sender, EventArgs e)
         {
@@ -51,7 +52,7 @@ namespace SportsComplex.DesktopUI
             {
                 MessageBox.Show("Entered type name is invalid", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-      
+
 
             // Update UI.
             UpdateSportsHallTypes();
@@ -63,8 +64,15 @@ namespace SportsComplex.DesktopUI
         {
             if (lstSportsHallTypes.SelectedIndex >= 0)
             {
-                _sportsHallTypesRepository.Remove(((SportsHallType)lstSportsHallTypes.SelectedItem).Id);
-                UpdateSportsHallTypes();
+                try
+                {
+                    _sportsHallTypesRepository.Remove(((SportsHallType)lstSportsHallTypes.SelectedItem).Id);
+                    UpdateSportsHallTypes();
+                }
+                catch(SqlException ex)
+                {
+                    MessageBox.Show("Selected sports hall type can not be removed because it is already used in some sports hall", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
     }

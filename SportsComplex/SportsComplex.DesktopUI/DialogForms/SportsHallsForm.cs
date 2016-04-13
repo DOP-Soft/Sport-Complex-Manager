@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -54,10 +55,17 @@ namespace SportsComplex.DesktopUI
         {
             if (dgvSportsHalls.SelectedRows.Count > 0)
             {
-                _sportsHallsRepository.Remove((int)dgvSportsHalls.SelectedRows[0].Cells[0].Value);
+                try
+                {
+                    _sportsHallsRepository.Remove((int)dgvSportsHalls.SelectedRows[0].Cells[0].Value);
 
-                // Update UI.
-                UpdateSportsHalls();
+                    // Update UI.
+                    UpdateSportsHalls();
+                }
+                catch(SqlException)
+                {
+                    MessageBox.Show("Selected sports hall can not be removed because it is already used in some rental item", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
