@@ -5,7 +5,7 @@ using System.Data;
 
 namespace SportsComplex.Repositories
 {
-    public class SqlSportsHallTypesRepository : SqlBaseRepository, ISportsHallTypes
+    public class SqlSportsHallTypesRepository : SqlBaseRepository, ISportsHallTypesRepository
     {
         public SqlSportsHallTypesRepository(string connnectionStr)
         {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SportsComplex.Repositories
 {
-    interface ISportsHallTypes
+    interface ISportsHallTypesRepository
     {
         IEnumerable<SportsHallType> SelectAll();
 
