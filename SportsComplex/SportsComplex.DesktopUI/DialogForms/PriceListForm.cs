@@ -15,13 +15,14 @@ namespace SportsComplex.DesktopUI
 {
     public partial class PriceListForm : Form
     {
-        private string connString = ConfigurationManager.ConnectionStrings["SportsComplexConnectionString"].ConnectionString;
+        private string _connString = ConfigurationManager.ConnectionStrings["SportsComplexConnectionString"].ConnectionString;
         private SqlSportsHallsRepository _hallsRepository;
 
         public PriceListForm()
         {
             InitializeComponent();
-            _hallsRepository = new SqlSportsHallsRepository(connString);
+
+            _hallsRepository = new SqlSportsHallsRepository(_connString);
         }
 
         private void PriceListForm_Load(object sender, EventArgs e)

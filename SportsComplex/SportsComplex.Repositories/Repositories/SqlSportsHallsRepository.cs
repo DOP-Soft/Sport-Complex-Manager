@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using SportsComplex.Entities;
 using System.Data.SqlClient;
 using System.Data;
@@ -11,6 +7,14 @@ namespace SportsComplex.Repositories
 {
     public class SqlSportsHallsRepository : SqlBaseRepository, ISportsHallsRepository
     {
+        #region Constants
+        private const string _getHallsByFilter = @"SELECT c.Id, c.ClassTypeId as [TypeId], ct.Name as [TypeName], c.Area,                                            c.Rate
+	                                                FROM [tblClass] c
+	                                                INNER JOIN [tblClassType] ct  ON c.ClassTypeId = ct.Id
+	                                                WHERE (c.Area BETWEEN @areaMin AND @areaMax)
+	                                                AND (c.Rate BETWEEN @rateMin AND @rateMax)";
+        #endregion
+
         public SqlSportsHallsRepository(string connectionString)
         {
             ConnectionString = connectionString;
@@ -196,11 +200,5 @@ namespace SportsComplex.Repositories
                 }
             }
         }
-
-        private const string _getHallsByFilter = @"SELECT c.Id, c.ClassTypeId as [TypeId], ct.Name as [TypeName], c.Area,                                            c.Rate
-	                                                FROM [tblClass] c
-	                                                INNER JOIN [tblClassType] ct  ON c.ClassTypeId = ct.Id
-	                                                WHERE (c.Area BETWEEN @areaMin AND @areaMax)
-	                                                AND (c.Rate BETWEEN @rateMin AND @rateMax)";
     }
 }

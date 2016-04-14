@@ -16,6 +16,8 @@ namespace SportsComplex.DesktopUI
 {
     public partial class SportsHallTypesForm : Form
     {
+        private SqlSportsHallTypesRepository _sportsHallTypesRepository;
+
         public SportsHallTypesForm()
         {
             InitializeComponent();
@@ -41,7 +43,6 @@ namespace SportsComplex.DesktopUI
             tbTypeName.Text = string.Empty;
         }
 
-
         private void btnAddHallType_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(tbTypeName.Text))
@@ -58,8 +59,6 @@ namespace SportsComplex.DesktopUI
             UpdateSportsHallTypes();
         }
 
-        private SqlSportsHallTypesRepository _sportsHallTypesRepository;
-
         private void btnRemove_Click(object sender, EventArgs e)
         {
             if (lstSportsHallTypes.SelectedIndex >= 0)
@@ -67,9 +66,10 @@ namespace SportsComplex.DesktopUI
                 try
                 {
                     _sportsHallTypesRepository.Remove(((SportsHallType)lstSportsHallTypes.SelectedItem).Id);
+                    // Update GUI.
                     UpdateSportsHallTypes();
                 }
-                catch(SqlException ex)
+                catch (SqlException)
                 {
                     MessageBox.Show("Selected sports hall type can not be removed because it is already used in some sports hall", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }

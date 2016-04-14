@@ -3,22 +3,20 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SportsComplex.DesktopUI
 {
     public partial class AddCustomerForm : Form
     {
+        #region Constructors
         public AddCustomerForm()
         {
             InitializeComponent();
         }
+        #endregion
 
+        #region Methods
         private void btnAddCustomer_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(tbLastName.Text) || string.IsNullOrWhiteSpace(tbFirstName.Text) 
@@ -34,5 +32,6 @@ namespace SportsComplex.DesktopUI
                 this.DialogResult = DialogResult.OK;
             }
         }
+        #endregion
     }
 }

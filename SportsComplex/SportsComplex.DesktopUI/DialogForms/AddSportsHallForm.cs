@@ -1,28 +1,30 @@
 ﻿using SportsComplex.Entities;
 using SportsComplex.Repositories;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Configuration;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SportsComplex.DesktopUI
 {
     public partial class AddSportsHallForm : Form
     {
+        #region Fields
+        private string _connString = ConfigurationManager.ConnectionStrings["SportsComplexConnectionString"].ConnectionString;
+        private SqlSportsHallTypesRepository _sportsHallTypesRepository;
+        private SqlSportsHallsRepository _sportsHallRepository;
+        #endregion
+
+        #region Constructors
         public AddSportsHallForm()
         {
             InitializeComponent();
 
-            _sportsHallTypesRepository = new SqlSportsHallTypesRepository(ConfigurationManager.ConnectionStrings["SportsComplexConnectionString"].ConnectionString);
-            _sportsHallRepository = new SqlSportsHallsRepository(ConfigurationManager.ConnectionStrings["SportsComplexConnectionString"].ConnectionString);
+            _sportsHallTypesRepository = new SqlSportsHallTypesRepository(_connString);
+            _sportsHallRepository = new SqlSportsHallsRepository(_connString);
         }
+        #endregion
 
+        #region Methods
         private void AddSportsHallForm_Load(object sender, EventArgs e)
         {
             cbType.Items.Clear();
@@ -46,8 +48,6 @@ namespace SportsComplex.DesktopUI
                 MessageBox.Show("First, chose a type of sports hall", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
-
-        private SqlSportsHallTypesRepository _sportsHallTypesRepository;
-        private SqlSportsHallsRepository _sportsHallRepository;
+        #endregion
     }
 }

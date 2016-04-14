@@ -8,6 +8,14 @@ namespace SportsComplex.DesktopUI
 {
     public partial class ExtendRentForm : Form
     {
+        #region Fields
+        private string _connString = ConfigurationManager.ConnectionStrings["SportsComplexConnectionString"].ConnectionString;
+
+        private SqlRentsRepository _rentsRepository;
+        private RentItem _rent;
+        #endregion
+
+        #region Constructors
         public ExtendRentForm(RentItem rent)
         {
             InitializeComponent();
@@ -17,9 +25,9 @@ namespace SportsComplex.DesktopUI
             // Accept parameter.
             _rent = rent;
         }
+        #endregion
 
-        private RentItem _rent;
-
+        #region Methods
         private void dtpTimeTo_ValueChanged(object sender, EventArgs e)
         {
             TimeSpan ts = dtpTimeFrom.Value - dtpTimeTo.Value;
@@ -41,9 +49,6 @@ namespace SportsComplex.DesktopUI
             this.DialogResult = DialogResult.OK;
             return;
         }
-
-        private SqlRentsRepository _rentsRepository;
-
-        private string _connString = ConfigurationManager.ConnectionStrings["SportsComplexConnectionString"].ConnectionString;
+        #endregion
     }
 }

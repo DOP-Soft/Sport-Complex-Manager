@@ -11,6 +11,7 @@ namespace SportsComplex.Repositories
 {
     public class SqlRentsRepository : SqlBaseRepository, IRentsRepository
     {
+        #region Constants
         const string getRentsOnDateQuery = @"SELECT rent.[Id]
                                           ,rent.[CustomerId]
 	                                      ,customer.FirstName AS [CustomerFirstName]
@@ -92,6 +93,7 @@ namespace SportsComplex.Repositories
                                           INNER JOIN [tblClass] c ON rent.ClassId = c.Id
                                           INNER JOIN [tblClassType] ct ON c.ClassTypeId = ct.Id
                                           WHERE rent.Id = @rentId AND rent.[Deleted] = 0";
+        #endregion
 
         public SqlRentsRepository(string connectionString)
         {

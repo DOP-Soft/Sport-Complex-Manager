@@ -15,11 +15,19 @@ namespace SportsComplex.DesktopUI
 {
     public partial class SportsHallsForm : Form
     {
+        private SqlSportsHallsRepository _sportsHallsRepository;
+
         public SportsHallsForm()
         {
             InitializeComponent();
 
             _sportsHallsRepository = new SqlSportsHallsRepository(ConfigurationManager.ConnectionStrings["SportsComplexConnectionString"].ConnectionString);
+        }
+
+        private void SportsHallsForm_Load(object sender, EventArgs e)
+        {
+            // Update UI.
+            UpdateSportsHalls();
         }
 
         private void btnSportsHallTypes_Click(object sender, EventArgs e)
@@ -34,7 +42,6 @@ namespace SportsComplex.DesktopUI
             if (frmAddSportsHall.ShowDialog() == DialogResult.OK)
             {
                 UpdateSportsHalls();
-
             }
         }
 
@@ -48,8 +55,6 @@ namespace SportsComplex.DesktopUI
                 dgvSportsHalls.Rows.Add(hall.Id, hall.Type.Name, hall.Area, hall.Rate);
             }
         }
-
-        private SqlSportsHallsRepository _sportsHallsRepository;
 
         private void btnRemove_Click(object sender, EventArgs e)
         {
@@ -67,12 +72,6 @@ namespace SportsComplex.DesktopUI
                     MessageBox.Show("Selected sports hall can not be removed because it is already used in some rental item", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-        }
-
-        private void SportsHallsForm_Load(object sender, EventArgs e)
-        {
-            // Update UI.
-            UpdateSportsHalls();
-        }
+        }  
     }
 }

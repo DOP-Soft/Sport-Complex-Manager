@@ -15,13 +15,21 @@ namespace SportsComplex.DesktopUI
 {
     public partial class RentersForm : Form
     {
+        #region Fields
+        private string _connString = ConfigurationManager.ConnectionStrings["SportsComplexConnectionString"].ConnectionString;
+        private SqlCustomersRepository _customersRepository;
+        #endregion
+
+        #region Constructors
         public RentersForm()
         {
             InitializeComponent();
 
-            _customersRepository = new SqlCustomersRepository(connString);
+            _customersRepository = new SqlCustomersRepository(_connString);
         }
+        #endregion
 
+        #region Methods
         private void RentersForm_Load(object sender, EventArgs e)
         {
             var customers = _customersRepository.SelectAll();
@@ -31,8 +39,6 @@ namespace SportsComplex.DesktopUI
                 dgvCustomers.Rows.Add(r.Id, r.FirstName, r.LastName, r.Phone);
             }
         }
-
-
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
@@ -85,8 +91,6 @@ namespace SportsComplex.DesktopUI
                 MessageBox.Show(ex.Message, "Edit error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
-        private SqlCustomersRepository _customersRepository;
-        private string connString = ConfigurationManager.ConnectionStrings["SportsComplexConnectionString"].ConnectionString;
+        #endregion
     }
 }

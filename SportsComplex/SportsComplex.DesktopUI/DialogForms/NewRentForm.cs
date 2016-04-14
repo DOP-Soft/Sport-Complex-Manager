@@ -10,16 +10,45 @@ namespace SportsComplex.DesktopUI
 {
     public partial class NewRentForm : Form
     {
+        #region Private fields
+        private string _connString = ConfigurationManager.ConnectionStrings["SportsComplexConnectionString"].ConnectionString;
+
+        private SqlSportsHallsRepository _sportsHallsRepository;
+        private SqlSportsHallTypesRepository _sportsHallTypesRepository;
+        private SqlCustomersRepository _customersRepository;
+        private SqlRentsRepository _rentsRepository;
+        #endregion
+
+        #region Constructors
         public NewRentForm()
         {
             InitializeComponent();
+
             _sportsHallTypesRepository = new SqlSportsHallTypesRepository(_connString);
             _sportsHallsRepository = new SqlSportsHallsRepository(_connString);
             _customersRepository = new SqlCustomersRepository(_connString);
             _rentsRepository = new SqlRentsRepository(_connString);
         }
+        #endregion
 
+        #region Properties
         public int RentId { get; private set; }
+        #endregion
+
+        #region Methods
+        public void UpdateSportsHallsDataGridView(IEnumerable<SportsHall> halls)
+        {
+            dgvSportsHalls.Rows.Clear();
+
+            foreach (var h in halls)
+            {
+                dgvSportsHalls.Rows.Add(
+                    h.Id,
+                    h.Type.Name,
+                    h.Area,
+                    h.Rate);
+            }
+        }
 
         private void NewRentForm_Load(object sender, EventArgs e)
         {
@@ -45,22 +74,6 @@ namespace SportsComplex.DesktopUI
             dtpTimeFrom.Value = dtpTimeFrom.Value.AddMinutes(5);
             dtpTimeTo.Value = dtpTimeTo.Value.AddHours(1);
         }
-
-        public void UpdateSportsHallsDataGridView(IEnumerable<SportsHall> halls)
-        {
-            dgvSportsHalls.Rows.Clear();
-
-            foreach (var h in halls)
-            {
-                dgvSportsHalls.Rows.Add(
-                    h.Id,
-                    h.Type.Name,
-                    h.Area,
-                    h.Rate);
-            }
-        }
-
-
 
         private void cbClassType_DropDown(object sender, EventArgs e)
         {
@@ -119,9 +132,7 @@ namespace SportsComplex.DesktopUI
             {
                 MessageBox.Show("Please, chose sports hall", "Info");
             }
-        }
-
-        
+        }   
 
         private void dtpTimeFrom_ValueChanged(object sender, EventArgs e)
         {
@@ -149,12 +160,6 @@ namespace SportsComplex.DesktopUI
             // Update UI.
             UpdateSportsHallsDataGridView(halls);
         }
-
-        private SqlSportsHallsRepository _sportsHallsRepository;
-        private SqlSportsHallTypesRepository _sportsHallTypesRepository;
-        private SqlCustomersRepository _customersRepository;
-        private SqlRentsRepository _rentsRepository;
-
-        private string _connString = ConfigurationManager.ConnectionStrings["SportsComplexConnectionString"].ConnectionString;
+        #endregion
     }
 }

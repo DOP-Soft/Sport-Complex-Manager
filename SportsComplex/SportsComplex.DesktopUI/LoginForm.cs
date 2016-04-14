@@ -1,34 +1,36 @@
 ﻿using SportsComplex.Entities;
 using SportsComplex.Repositories;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Drawing;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SportsComplex.DesktopUI
 {
     public partial class LoginForm : Form
     {
-        private string connString = ConfigurationManager.ConnectionStrings["SportsComplexConnectionString"].ConnectionString;
+        #region Fields
+        private string _connString = ConfigurationManager.ConnectionStrings["SportsComplexConnectionString"].ConnectionString;
         private SqlUsersRepository _userRepository;
+        #endregion
 
-        // Logged user information.
-        public User User { get; set; }
-
+        #region Constructors
         public LoginForm()
         {
             InitializeComponent();
-            _userRepository = new SqlUsersRepository(connString);
-        }
 
+            _userRepository = new SqlUsersRepository(_connString);
+        }
+        #endregion
+
+        #region Properties
+        // Logged user information.
+        public User User { get; set; }
+        #endregion
+
+        #region Methods
         private void btnLogin_Click(object sender, EventArgs e)
         {
             try
@@ -48,5 +50,6 @@ namespace SportsComplex.DesktopUI
                 MessageBox.Show(ex.Message, "Authentification error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        #endregion
     }
 }

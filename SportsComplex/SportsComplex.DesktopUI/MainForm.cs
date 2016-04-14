@@ -2,24 +2,81 @@
 using SportsComplex.Repositories;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Configuration;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SportsComplex.DesktopUI
 {
     public partial class MainForm : Form
     {
+        #region Fields
+        private string _connString = ConfigurationManager.ConnectionStrings["SportsComplexConnectionString"].ConnectionString;
+
+        // Repositories.
+        private SqlRentsRepository _rentsRepository;
+        #endregion
+
+        #region Constructors
         public MainForm(User user)
         {
             InitializeComponent();
-            _rentsRepository = new SqlRentsRepository(connString);
+
+            _rentsRepository = new SqlRentsRepository(_connString);
             this.Text = String.Format("{0} - [Logged as {1} {2}]", this.Text, user.FirstName, user.LastName);
+        }
+        #endregion
+
+        #region Methods
+        public void UpdateRentsDataGridView(IEnumerable<RentItem> rents)
+        {
+            dgvRents.Rows.Clear();
+
+            foreach (var r in rents)
+            {
+                dgvRents.Rows.Add(
+                    r.Id,
+                    string.Format("{0} {1}.", r.Customer.LastName, r.Customer.FirstName[0]),
+                    r.SportsHall.Type.Name,
+                    r.SportsHall.Area,
+                    r.SportsHall.Rate,
+                    r.DateStart,
+                    r.DateEnd,
+                    r.Customer.Phone,
+                    r.Cost);
+            }
+        }
+
+        private void dtpDate_ValueChanged(object sender, EventArgs e)
+        {
+            var rents = _rentsRepository.GetRentsOnDate(dtpDate.Value);
+
+            UpdateRentsDataGridView(rents);
+        }
+
+        private void btnExtendRent_Click(object sender, EventArgs e)
+        {
+            if (dgvRents.SelectedRows.Count > 0)
+            {
+                int rentId = (int)dgvRents.SelectedRows[0].Cells[0].Value;
+                var rent = _rentsRepository.GetRentById(rentId);
+
+                ExtendRentForm frmExtendRent = new ExtendRentForm(rent);
+                if (frmExtendRent.ShowDialog() == DialogResult.OK)
+                {
+                    UpdateRentsDataGridView(_rentsRepository.GetRentsOnDate(DateTime.Now));
+                }
+            }
+
+        }
+
+        private void rentersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RentersForm frmRenters = new RentersForm();
+            frmRenters.ShowDialog();
+
+            UpdateRentsDataGridView(_rentsRepository.GetRentsOnDate(DateTime.Now));
         }
 
         private void miShowPriceList_Click(object sender, EventArgs e)
@@ -42,25 +99,6 @@ namespace SportsComplex.DesktopUI
             UpdateRentsDataGridView(rents);
         }
 
-        public void UpdateRentsDataGridView(IEnumerable<RentItem> rents)
-        {
-            dgvRents.Rows.Clear();
-
-            foreach (var r in rents)
-            {
-                dgvRents.Rows.Add(
-                    r.Id, 
-                    string.Format("{0} {1}.", r.Customer.LastName, r.Customer.FirstName[0]), 
-                    r.SportsHall.Type.Name, 
-                    r.SportsHall.Area,
-                    r.SportsHall.Rate,
-                    r.DateStart,
-                    r.DateEnd,
-                    r.Customer.Phone,
-                    r.Cost);
-            }
-        }
-
         private void sportsHallsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SportsHallsForm frmSportsHalls = new SportsHallsForm();
@@ -72,10 +110,10 @@ namespace SportsComplex.DesktopUI
             if (dgvRents.Rows.Count > 0 && dgvRents.SelectedRows[0].Index >= 0)
             {
                 var dr = MessageBox.Show("Do you really want to finish the rent?", "Finishing rent", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                
+
                 if (dr == DialogResult.Yes)
                 {
-                    decimal moneyChange = _rentsRepository.Remove((int) dgvRents.SelectedRows[0].Cells[0].Value);
+                    decimal moneyChange = _rentsRepository.Remove((int)dgvRents.SelectedRows[0].Cells[0].Value);
 
                     if (moneyChange > 0)
                     {
@@ -103,8 +141,8 @@ namespace SportsComplex.DesktopUI
 
             var rents = _rentsRepository.GetRentsOnDate(dtpDate.Value);
             var orderedRents = from r in rents
-                        orderby r.Customer.LastName, r.Customer.FirstName
-                        select r;
+                               orderby r.Customer.LastName, r.Customer.FirstName
+                               select r;
             var distincRents = orderedRents
                                 .GroupBy(a => a.Customer.Id)
                                 .Select(g => g.First());
@@ -134,42 +172,6 @@ namespace SportsComplex.DesktopUI
             AboutForm frmAbout = new AboutForm();
             frmAbout.ShowDialog();
         }
-
-        private string connString = ConfigurationManager.ConnectionStrings["SportsComplexConnectionString"].ConnectionString;
-        
-        // Repositories.
-        private SqlRentsRepository _rentsRepository;
-        private SqlCustomersRepository _customersRepository;
-
-        private void dtpDate_ValueChanged(object sender, EventArgs e)
-        {
-            var rents = _rentsRepository.GetRentsOnDate(dtpDate.Value);
-
-            UpdateRentsDataGridView(rents);
-        }
-
-        private void btnExtendRent_Click(object sender, EventArgs e)
-        {
-            if (dgvRents.SelectedRows.Count > 0)
-            {
-                int rentId = (int)dgvRents.SelectedRows[0].Cells[0].Value;
-                var rent = _rentsRepository.GetRentById(rentId);
-
-                ExtendRentForm frmExtendRent = new ExtendRentForm(rent);
-                if (frmExtendRent.ShowDialog() == DialogResult.OK)
-                {
-                    UpdateRentsDataGridView(_rentsRepository.GetRentsOnDate(DateTime.Now));
-                }
-            }
-            
-        }
-
-        private void rentersToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            RentersForm frmRenters = new RentersForm();
-            frmRenters.ShowDialog();
-
-            UpdateRentsDataGridView(_rentsRepository.GetRentsOnDate(DateTime.Now));
-        }
+        #endregion
     }
 }
