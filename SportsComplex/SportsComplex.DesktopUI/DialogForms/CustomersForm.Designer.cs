@@ -1,6 +1,6 @@
 ﻿namespace SportsComplex.DesktopUI
 {
-    partial class RentersForm
+    partial class CustomersForm
     {
         /// <summary>
         /// Required designer variable.

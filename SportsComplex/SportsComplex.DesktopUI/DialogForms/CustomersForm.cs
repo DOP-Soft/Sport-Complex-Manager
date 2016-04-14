@@ -13,7 +13,7 @@ using System.Windows.Forms;
 
 namespace SportsComplex.DesktopUI
 {
-    public partial class RentersForm : Form
+    public partial class CustomersForm : Form
     {
         #region Fields
         private string _connString = ConfigurationManager.ConnectionStrings["SportsComplexConnectionString"].ConnectionString;
@@ -21,7 +21,7 @@ namespace SportsComplex.DesktopUI
         #endregion
 
         #region Constructors
-        public RentersForm()
+        public CustomersForm()
         {
             InitializeComponent();
 
